@@ -8,6 +8,17 @@
 
 <body>
 
+  <!-- <form action="https://icanhazdadjoke.com/search?" method="GET"> -->
+  <form action="https://api.giphy.com/v1/gifs/random?" id="giphy-form">
+    <input name ="tag" type="text" id="search-text">
+    <input type="submit" value="Submit" id="submit-button" >
+    <input type="reset" value="reset" id="reset-button">
+  </form>
+  
+  <div id="main-content">
+  
+  </div>
+
 <script src="https://unpkg.com/jquery"></script>
 <script src="https://unpkg.com/axios/dist/axios.js"></script>
 <script src="app.js"></script>
