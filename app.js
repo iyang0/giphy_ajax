@@ -1,50 +1,67 @@
 "use strict"
 
+// initialize global variables
 const API_KEY="MhAodEJIJxQMxW9XqxKjyXfNYdLoOIym";
 const $SUBMIT_BUTTON = $("#submit-button");
 const $RESET_BUTTON = $("#reset-button");
-let $giphyForm = $("#giphy-form");
-let $searchText = $("#search-text")
-let $content = $("#main-content")
-let randomGifAPI = `https://api.giphy.com/v1/gifs/random?`
+const $GIF_FORM = $("#giphy-form")
+const GIF_API_BASE = "https://api.giphy.com/v1/gifs";
+let $content = $("#main-content");
 
 
-// Submit Button Event Handler
-function submitHandler(evt){
+/*
+* Submit Button Event Handler
+* callback function that takes the value of text input
+* and generates a random gif to put in DOM
+*/
+async function submitHandler(evt){
 	evt.preventDefault();
 	// get value from search box 
-	let searchQuery = $searchText.val();
-
-	// add the search query to random gif API
-	// append the string to to API
-	// make AJAX call to the API
-	getRandomGif(randomGifAPI, searchQuery)
-	// make function to add the gif to the DOM
+	let searchQuery = $("#search-text").val();
+	let randomGifAPI = `${GIF_API_BASE}/random?`;
+	
+	let gifURL =  await generateRandomGif(randomGifAPI, searchQuery);
+	addToGallery(gifURL);
 }
 
-async function getRandomGif(url,searchQuery) {
+
+/*
+* makes an AJAX Giphy API call for a random gif with the searched term
+* and then we add it to the DOM
+*/
+async function generateRandomGif(url,searchQuery) {
 	let response = await axios.get(url, {params:{api_key:API_KEY, tag:searchQuery}});
-	console.log(response);
-	console.log('response.data',response.data)
-	console.log('response.data.data',response.data.data)
-
-  	addToGallery(response.data.data.image_original_url);
+	return response.data.data.image_original_url
+  	
 }
 
-$SUBMIT_BUTTON.on("click", submitHandler);
-
+/*
+* take in a URL of a gif
+* create an image element with the gif
+* append the image to the DOM
+*/
 function addToGallery(gif) {
 	// Create JQUERY element
 	let $img = $('<img>')
 		.attr("src", gif)
-		.css({"height":"240px","width":"240px"})
+		.css({"height":"240px"
+			,"width":"240px"
+			,"margin":"3px"});
 	
 	$content.append($img);
 }
 
+/*
+* emptying every child element in the #content tag
+*/
+function removeGifs(){
+	$content.empty()	
+}
 
-//API parameters q:query, api_key:api key
-//e.g. http://api.giphy.com/v1/gifs/search?q=hilarious&api_key=MhAodEJIJxQMxW9XqxKjyXfNYdLoOIym
+//event handlers for submit and reset buttons.
+$GIF_FORM.on("submit", submitHandler);
+$RESET_BUTTON.on("click", removeGifs);
+
 
 console.log("Let's get this party started!");
 
